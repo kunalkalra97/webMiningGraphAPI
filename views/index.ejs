@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/semantic.min.css'/>
+    <link rel='stylesheet' href='/stylesheets/style.css'/>
+    <script type="text/javascript" src="/javascripts/jQuery.js"></script>
+    <script type="text/javascript" src="/javascripts/semantic.min.js"></script>
+  </head>
+  <body>
+  
+    <h1 id="welcome">Welcome to <%= title %></p>
+
+<div class="tree">
+	<ul>
+		<li>
+			<a href="#">SETTINGS</a>
+			<ul id="firstLevel">
+			</ul>
+		</li>
+	</ul>
+</div>
+
+    <script>
+
+      $('.ui.dropdown').dropdown();
+
+      var firstLevel = $('#firstLevel');
+      
+      function checkIfEmpty(JSObject) {
+        var counter = 0;
+        for (key in JSObject) {
+          if(key) {
+            counter ++;
+          }
+        }
+        return counter
+      }
+
+      function makeAjaxRequest() {
+          $.ajax({
+            type: "GET",
+            url: "/getDataforTree",
+            dataType: "JSON",
+            success: function (data) { 
+              if(checkIfEmpty(data)) {
+                clearInterval(repeatedRequest);
+
+                
+
+                for (mainSettings in data) {
+
+                  var b = $('<li></li>', {
+                    id:mainSettings
+                  });
+
+                  var c = $('<ul></ul>');
+
+                  var d = $('<a></a>', {
+                    href:"#",
+                    text:mainSettings
+                  });
+
+                  var e = $('<li></li>');
+
+                  c.append(b);
+                  e.append(d);
+                  e.append(c);
+                  firstLevel.append(e);
+
+                }
+
+                for (mainSettings in data) {
+                  
+                  var innerSettingsArray = data[mainSettings];
+                  var location = $('#'+mainSettings);
+
+                  innerSettingsArray.forEach(function(element) {
+
+                  var a = $('<a></a>', {
+                    href:"#",
+                    text:element
+                  });
+
+                  location.append(a);
+                    
+                  }, this);
+                  
+
+                }
+
+              }
+            }
+          });
+      }
+      
+      var repeatedRequest = setInterval(makeAjaxRequest, 3000);
+
+      var firstLevelSetting = $('<li id="secondLevel"><a href="#">Child</a><ul><li><a href="#">Grand Child</a></li></ul></li>');
+
+
+  //append in first level
+  //     <li>
+	// 				<a href="#">Child</a>
+	// 				<ul id="secondLevel">
+	// 					<li>
+	// 						<a href="#">Grand Child</a>
+	// 					</li>
+	// 				</ul>
+  //       </li>
+
+  // //append in second level
+  //           <li>
+	// 						<a href="#">Grand Child</a>
+	// 					</li>
+  
+
+  //   </script>
+
+  </body>
+</html>
