@@ -33,9 +33,9 @@ router.get('/getDataforTree', function (req, res, next) {
 });
 
 router.get('/', function(req, res, next) {
+
+  res.setHeader('Cache-Control','no-store');
   res.render('index', {title:"Web Mining"});
 });
-
-
 
 module.exports = router;
